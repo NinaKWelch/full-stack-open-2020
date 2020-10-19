@@ -31,8 +31,8 @@
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
-      "prettier --write",
-      "eslint"
+      "eslint",
+      "prettier --write"
     ]
   },
   "browserslist": {
