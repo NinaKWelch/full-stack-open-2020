@@ -2,52 +2,37 @@ interface Result {
     periodLength: number,
     trainingDays: number,
     success: boolean,
-    rating: number,
-    ratingDescription: string,
     target: number,
-    average: number
+    average: number,
+    rating: number,
+    ratingDescription: string
 }
 
 const calculateExercises = (exercises: Array<number>, target: number): Result => {
     const total = exercises.reduce((a, b) => a + b, 0);
     const average = total / exercises.length;
-  
-    const ratings = () => {
+
+    const getRating = () => {
         if (average < target / 2) {
-            return 1
+            return { rating: 1, ratingDescription: 'you\'re far from your target' }
         } else if (average < target)  {
-            return 2
+            return { rating: 2, ratingDescription: 'not too bad but could be better' }
         } else {
-            return 3
-        }
-    }
+            return { rating: 3, ratingDescription: 'well done, you\'re on target' }
+        }      
+    };
 
-    const rating = ratings()
-
-    const ratingDescriptions = () => {
-        switch(rating) {
-            case 1:
-                return 'you\'re far from your target';
-            case 2:
-                return 'not too bad but could be better'
-            case 3:
-                return 'well done, you\'re on target';
-            default:
-                return 'something went wrong';
-        }
-    }
+    const rating = getRating();
 
     const stats = {
         periodLength: exercises.length,
         trainingDays: exercises.filter(e => e !== 0).length,
         success: average >= target,
-        rating,
-        ratingDescription: ratingDescriptions(),
         target,
         average
     }
 
-    return stats;
+    return { ...stats, ...rating }
 };
 
 console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
