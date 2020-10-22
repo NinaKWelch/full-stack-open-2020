@@ -17,15 +17,15 @@ const parseExerciseArguments = (args: Array<string>): ExerciseValues => {
     if (args.length < 4) throw new Error('Add a target and hours exercised for at least one day');
     if (args.length > 31) throw new Error('Maximum days that can be added is 28');
 
-    const value = Number(args[2])
-    const arr = args.splice(3).map(Number)
+    const value = Number(args[2]);
+    const arr = args.splice(3).map(Number);
   
     if (!isNaN(value) && !arr.some(isNaN)) {
-       return { value, arr }
+       return { value, arr };
     } else {
         throw new Error('Provided values were not all numbers!');
     }
-}
+};
 
 const calculateExercises = (target: number, exercises: Array<number>): Result => {
     const total = exercises.reduce((a, b) => a + b, 0);
@@ -33,13 +33,13 @@ const calculateExercises = (target: number, exercises: Array<number>): Result =>
 
     const getRating = () => {
         if (average < target / 2) {
-            return { rating: 1, ratingDescription: 'You\'re far from your target' }
+            return { rating: 1, ratingDescription: 'You\'re far from your target' };
         } else if (average < target)  {
-            return { rating: 2, ratingDescription: 'Not too bad but could be better' }
+            return { rating: 2, ratingDescription: 'Not too bad but could be better' };
         } else {
-            return { rating: 3, ratingDescription: 'Well done, you\'re on target' }
+            return { rating: 3, ratingDescription: 'Well done, you\'re on target' };
         }      
-    }
+    };
 
     const rating = getRating();
 
@@ -49,15 +49,15 @@ const calculateExercises = (target: number, exercises: Array<number>): Result =>
         success: average >= target,
         target,
         average
-    }
+    };
 
-    return { ...stats, ...rating }
+    return { ...stats, ...rating };
 };
 
 try {
     const { value, arr } = parseExerciseArguments(process.argv);
 
     console.log(calculateExercises(value, arr));
-} catch(err) {
-    console.log('Error message: ', err.message);
+} catch(e) {
+    console.log('Error message: ', (<Error>e).message);
 }
