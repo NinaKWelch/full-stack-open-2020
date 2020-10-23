@@ -27,7 +27,7 @@ const parseExerciseArguments = (args: Array<string>): ExerciseValues => {
     }
 };
 
-const calculateExercises = (target: number, exercises: Array<number>): Result => {
+export const calculateExercises = (target: number, exercises: Array<number>): Result => {
     const total = exercises.reduce((a, b) => a + b, 0);
     const average = total / exercises.length;
 
