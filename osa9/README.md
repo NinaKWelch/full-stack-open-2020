@@ -195,3 +195,60 @@ In this exercise you might find it beneficial to use the **explicit any** type w
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 Note that you need to have a [correct setup](https://fullstackopen.com/en/part3/node_js_and_express/#receiving-data) in order to get hold to the request body.
+
+## setup
+
+For next set of exercises you will be developing a backend for an existing project called **Patientor** which is a simple medical record application for doctors who handle diagnoses and basic health information of their patients.
+
+The [frontend](https://github.com/fullstack-hy2020/patientor) has already been built by outsider experts and your task is to create a backend to support the existing code.
+
+## 9.8 Patientor backend, step1
+
+Initialise project that will be used by the frontend. Configure eslint and tsconfig with the same configurations that are used in the material. Define an endpoint that responses to HTTP GET requests to route /ping.
+
+The project should be runnable with npm scripts both in development mode and as compiled code in production mode.
+
+## 9.9 Patientor backend, step2
+
+Fork and clone the project [patientor](https://github.com/fullstack-hy2020/patientor). Start the project with the help of the _README_ file. You should be able to use the frontend without a functioning backend.
+
+Ensure that backend answers to the ping request that _frontend_ has made on startup. Check developer tool to make sure it really works:
+
+![](https://fullstackopen.com/static/ecb7fbc31d1698f2ba09ee2ee77a4982/5a190/16a.png)
+
+You might also want to have a look at the tab console. If something fails [part 3](https://fullstackopen.com/en/part3/) of the course shows how the problem can be solved.
+
+
+## 9.10 Patientor backend, step3
+
+Similarly to Ilari's flight service, we do not use a real database in our app but instead use hardcoded data, that is in the files [diagnoses.json](https://github.com/fullstack-hy2020/misc/blob/master/diagnoses.json) and [patients.json](https://github.com/fullstack-hy2020/misc/blob/master/patients.json). Get the files and store those into a directory called _data_ under your project. All data modification can be done in runtime memory, so during this part it is **not necessary** to write to a file.
+
+Create a type _Diagnose_ and use it to create endpoint _/api/diagnoses_ for fetching all diagnoses with HTTP GET.
+
+Structure your code properly by using meaningfully named directories and files.
+
+Note that _diagnoses_ may or may not contain the field _latin_. You might want to use [optional properties](https://www.typescriptlang.org/docs/handbook/interfaces.html#optional-properties) in the type definition.
+
+## 9.11 Patientor backend, step4
+
+Create data type _Patient_ and set up a GET-endpoint _/api/patients_ that returns all patients to the frontend excluding field _ssn_. Use a [utility type](https://www.typescriptlang.org/docs/handbook/utility-types.html) to make sure you are selecting and returning only the wanted fields.
+
+In this exercise you may assume that field _gender_ has type `string`.
+
+Try the endpoint with browser and ensure that _ssn_ is not included in the response:\
+
+![](https://fullstackopen.com/static/bc4ce99035b5419acfa2d65698c5cb2d/5a190/22g.png)
+
+After creating the endpoint, ensure that the _frontend_ shows the list of patients:
+
+![](https://fullstackopen.com/static/c6b49beac1a640408462ec316e341d7e/5a190/22h.png)
+
+## 9.12 Patientor backend, step5
+
+Create a POST-endpoint _/api/patients_ for adding patients. Ensure that you can add patients also from the frontend.
+
+## 9.13 Patientor backend, step6
+
+Set up safe parsing, validation and type guards to the POST _/api/patients_ request.
+
+Refactor the Gender field to use an [enum](https://www.typescriptlang.org/docs/handbook/enums.htmlcd documents_) type.
