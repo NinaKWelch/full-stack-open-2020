@@ -22,7 +22,7 @@ const App = () => {
   ];
 
   const calculateTotal = () =>
-    courseParts.reduce((carry, part) => carry + part.exerciseCount, 0);
+    courseParts.reduce((acc, part) => acc + part.exerciseCount, 0);
 
   return (
     <div>

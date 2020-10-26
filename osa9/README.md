@@ -252,3 +252,336 @@ Create a POST-endpoint _/api/patients_ for adding patients. Ensure that you can 
 Set up safe parsing, validation and type guards to the POST _/api/patients_ request.
 
 Refactor the Gender field to use an [enum](https://www.typescriptlang.org/docs/handbook/enums.htmlcd documents_) type.
+
+## 9.14
+
+Create a new Create React App with TypeScript, and set up eslint for the project similarly to how we just did.
+
+This exercise is similar to the one you have already done in [Part 1](https://fullstackopen.com/en/part1/java_script#exercises-1-3-1-5) of the course, but with TypeScript and some extra tweaks. Start off by modifying the contents of _index.tsx_ to the following:
+
+```
+import React from "react";
+import ReactDOM from "react-dom";
+
+const App: React.FC = () => {
+  const courseName = "Half Stack application development";
+  const courseParts = [
+    {
+      name: "Fundamentals",
+      exerciseCount: 10
+    },
+    {
+      name: "Using props to pass data",
+      exerciseCount: 7
+    },
+    {
+      name: "Deeper type usage",
+      exerciseCount: 14
+    }
+  ];
+
+  return (
+    <div>
+      <h1>{courseName}</h1>
+      <p>
+        {courseParts[0].name} {courseParts[0].exerciseCount}
+      </p>
+      <p>
+        {courseParts[1].name} {courseParts[1].exerciseCount}
+      </p>
+      <p>
+        {courseParts[2].name} {courseParts[2].exerciseCount}
+      </p>
+      <p>
+        Number of exercises{" "}
+        {courseParts.reduce((carry, part) => carry + part.exerciseCount, 0)}
+      </p>
+    </div>
+  );
+};
+
+ReactDOM.render(<App />, document.getElementById("root"));
+```
+
+and remove the unnecessary files.
+
+The whole app is now in one component. That is not what we want, so refactor the code so that it consists of three components: _Header_, _Content_ and _Total_. All data is still kept in the _App_ component, which passes all necessary data to each component as props. Be sure to add type declarations for each component's props!
+
+The _Header_ component should take care of rendering the name of the course. _Content_ should render the names of the different parts and the amount of exercises in each part, and _Total_ should render the total sum of exercises in all parts.
+
+The _App_ component should look somewhat like this:
+
+```
+const App = () => {
+  // const-declarations
+
+  return (
+    <div>
+      <Header name={courseName} />
+      <Content ... />
+      <Total ... />
+    </div>
+  )
+};
+```
+
+## 9.15
+
+First add the type information to _index.tsx_ and replace the variable `courseParts` with the one from the example below.
+
+```
+// new types
+interface CoursePartBase {
+  name: string;
+  exerciseCount: number;
+}
+
+interface CoursePartOne extends CoursePartBase {
+  name: "Fundamentals";
+  description: string;
+}
+
+interface CoursePartTwo extends CoursePartBase {
+  name: "Using props to pass data";
+  groupProjectCount: number;
+}
+
+interface CoursePartThree extends CoursePartBase {
+  name: "Deeper type usage";
+  description: string;
+  exerciseSubmissionLink: string;
+}
+
+type CoursePart = CoursePartOne | CoursePartTwo | CoursePartThree;
+
+// this is the new coursePart variable
+const courseParts: CoursePart[] = [
+  {
+    name: "Fundamentals",
+    exerciseCount: 10,
+    description: "This is an awesome course part"
+  },
+  {
+    name: "Using props to pass data",
+    exerciseCount: 7,
+    groupProjectCount: 3
+  },
+  {
+    name: "Deeper type usage",
+    exerciseCount: 14,
+    description: "Confusing description",
+    exerciseSubmissionLink: "https://fake-exercise-submit.made-up-url.dev"
+  }
+];
+```
+
+Now we know that both interfaces `CoursePartOne` and `CoursePartThree` share not only the base attributes, but also an attribute called `description`, which is a string in both interfaces.
+
+Your first task is to to declare a new interface, that includes the `description` attribute and extends the `CoursePartBase` interface. Then modify the code so that you can remove the `description` attribute from both `CoursePartOne` and `C`oursePartThree` without getting any errors.
+
+Then create a component _Part_ that renders all attributes of each type of course part. Use a switch case -based exhaustive type checking! Use the new component in component _Content_.
+
+Lastly, add your own course part interface with at least the following attributes: `name`, `exerciseCount` and `description`. Then add that interface to the type union `CoursePart` and add corresponding data to the `courseParts` variable. Now if you have not modified your _Content_ component correctly, you should get an error, because you have not yet added support for the fourth course part type. Do the necessary changes to _Content_, so that all attributes for the new course part also get rendered and that the compiler doesn't produce any errors.
+
+## setup
+
+We will soon add new type `_`Entry` for our app that represents a light weight patient journal entry. It consists of journal text i.e. description, creation date, information regarding the specialist who created it and possible diagnosis codes. Diagnosis codes map to the ICD-10 codes returned from the _/api/diagnoses endpoint_. Our naive implementation will be that a patient has an array of entries.
+
+Before going into this, let us do some preparatory work.
+
+## 9.16 Patientor, step1
+
+Create an endpoint _/api/patients/:id_ that returns all of the patient information for one patient, including the array of patient entries that is still empty for all the patients. For the time being, expand the backend types as follows:
+
+```
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface Entry {
+}
+
+export interface Patient {
+  id: string;
+  name: string;
+  ssn: string;
+  occupation: string;
+  gender: Gender;
+  dateOfBirth: string;
+  entries: Entry[]
+}
+
+export type PublicPatient = Omit<Patient, 'ssn' | 'entries' >
+```
+
+Response should look as follows:
+
+![](https://fullstackopen.com/static/ad0b2c4fbc560a07305bb3de1d56578c/5a190/38a.png)
+
+## 9.17 Patientor, step2
+
+Create a page for showing a patient's full information in the frontend.
+
+User should be able to access a patient's information e.g by clicking the patient's name.
+
+Fetch the data from the enpoint created in the previous exercise. After fetching the patient information from the backend, add the fetched information to the application's state. Do not fetch the information if it already is in the app state, i.e. if the user is visiting the same patient's information many times.
+
+Since we now have the state in the context, you'll need to define a new action type for updating an individual patient's data.
+
+The Application uses [Semantic UI React](https://react.semantic-ui.com/) for styling, which is quite similar to [React Bootstrap](https://react-bootstrap.github.io/) and [MaterialUI](https://material-ui.com/) that we covered in [part 7](https://fullstackopen.com/en/part7/more_about_styles). You may also use it for the new components but that is up to you since our main focus now is Typescript.
+
+The Application also uses [react router](https://reacttraining.com/react-router/web/guides/quick-start) to control which view is visible in the frontend. You might want to have a look at [part 7](https://fullstackopen.com/en/part7/react_router) if you don't yet have a grasp on how the router works.
+
+The result could look like this:
+
+![](https://fullstackopen.com/static/56aa899fe44bc11ec3a3235ac9007834/5a190/39a.png)
+
+The gender is shown with react-semantic-ui component [Icon](https://react.semantic-ui.com/elements/icon/#gendersicons-can-represent-genders-or-types-of-sexuality)
+
+Note that in order to access the id in the url, you need to give [useParams](https://reacttraining.com/react-router/web/api/Hooks/useparams) a proper type argument:
+
+```
+const { id } = useParams<{ id: string }>();
+```
+
+## 9.18 Patientor, step3
+
+Currently we create the `action` objects wherever we dispatch the actions, e.g. component _App_ has the following:
+
+```
+dispatch({
+  type: "SET_PATIENT_LIST", payload: patientListFromApi
+});
+```
+
+Refactor the code to use [action creator](https://fullstackopen.com/en/part6/flux_architecture_and_redux#action-creators) functions that are all defined in the file _reducer.tsx_.
+
+For example the _App_ changes like this:
+
+```
+import { useStateValue, setPatientList } from "./state";
+
+// ...
+
+dispatch(setPatientList(patientListFromApi));
+```
+
+## 9.19 Patientor, step4
+
+Define the types `OccupationalHealthCareEntry` and `HospitalEntry` so that those conform with the example data. Ensure that your backend returns the entries properly when you go to a individual patient's route
+
+![](https://fullstackopen.com/static/21b5816433d1a5aeaf15bdac4f528d77/5a190/40.png)
+
+Use types properly in the backend! For now there is no need to do a proper validation for all the fields of the entries in the backend, it is enough e.g. to check that the field `type` has a correct value.
+
+## 9.20 Patientor, step5
+
+Extend a patient's page in the frontend to list the `date`, `description` and `diagnose` codes of the patient's entries.
+
+You can use the same type definition for an `Entry `in the frontend. For these exercises it is enough just to copy/paste the definitions from the backend to the frontend.
+
+Your solution could look like this:
+
+![](https://fullstackopen.com/static/bc5d529ae2163ff75b844c5c014ad074/5a190/41.png)
+
+## 9.21 Patientor, step6
+
+Fetch and add diagnoses to application state from _/api/diagnosis_ endpoint. Use the new diagnosis data to show the descriptions for patient's diagnosis codes:
+
+![](https://fullstackopen.com/static/6d08345c7fd0b3141e9de139f3ec87b0/5a190/42.png)
+
+## 9.22 Patientor, step7
+
+Extend the entry-listing in the patient page to include the `Entry`'s details with a new component that shows rest of the information of the patients entries distinguishing different types from each other.
+
+You could use eg. [Icon](https://react.semantic-ui.com/elements/icon/) or some other SemanticUI component the get appropriate visuals for your listing.
+
+You should use a `switch case` based rendering and _exhaustive type checking_ so that no cases can be forgotten.
+
+Like this:
+
+![](https://fullstackopen.com/static/97edaf23398bcd60caf2b0338f9f8135/5a190/35c.png)
+
+The resulting entries in the listing could look something like this:
+
+![](https://fullstackopen.com/static/6c81f869cc8bee05bdbdb588fbec1ddb/5a190/36a.png)
+
+## 9.23 Patientor, step8
+
+We have established that patients can have different kinds of entries. We don't yet have any way of adding entries to patients in our app, so at the moment it is pretty useless as an electronic medical record.
+
+Your next task is to add an endpoint _/api/patients/:id/entries_ to your backend, through which you can POST an entry for a patient.
+
+Remember that we have different kinds of entries in our app, so our backend should support all those types and check that at least all required fields are given for each type.
+
+## 9.24 Patientor, step9
+
+Now that our backend supports adding entries, we want to add the corresponding functionality to the frontend. In this exercise you should add a form for adding an entry to a patient. An intuitive place for accessing the form would be on a patient's page.
+
+In this exercise it is enough to support **one** entry type, and you do not have to handle any errors. It is enough if a new entry can be created when the form is filled with valid data.
+
+Upon a successful submit the new entry should be added to the correct patient and the patient's entries on the patient page should be updated to contain the new entry.
+
+If you like, you can re-use some of the code from the Add patient form for this exercise, but this is not a requirement.
+
+Note that the file [FormField.tsx](https://github.com/fullstack-hy2020/patientor/blob/master/src/AddPatientModal/FormField.tsx#L58) has a ready made component _DiagnosisSelection_ that can be used for setting the field diagnoses.
+
+It can be used as follows:
+
+```
+const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
+  const [{ diagnoses }] = useStateValue()
+
+  return (
+    <Formik
+    initialValues={{
+      /// ...
+    }}
+    onSubmit={onSubmit}
+    validate={values => {
+      /// ...
+    }}
+  >
+    {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
+
+      return (
+        <Form className="form ui">
+          // ...
+
+          <DiagnosisSelection
+            setFieldValue={setFieldValue}
+            setFieldTouched={setFieldTouched}
+            diagnoses={Object.values(diagnoses)}
+          />    
+
+          // ...
+        </Form>
+      );
+    }}
+  </Formik>
+  );
+};
+```
+
+There is also ready-made component _NumberField_ for the numeric values with a limited range
+
+```
+<Field
+  label="healthCheckRating"
+  name="healthCheckRating"
+  component={NumberField}
+  min={0}
+  max={3}
+/>
+```
+
+## 9.25 Patientor, step10
+
+Extend your solution so that it displays an error message if some required values are missing or formatted incorrectly.
+
+## 9.26 Patientor, step11
+
+Extend your solution so that it supports **two** entry types and displays an error message if some required values are missing or formatted incorrectly. You do not need to care about the possible errors in the server's response.
+
+The easiest but surely not the most elegant way to do this exercise is to have a separate form for each different entry type. Getting the types to work properly might be a slight challenge if you use just a single form.
+
+## 9.27 Patientor, step12
+
+Extend your solution so that it supports **all the entry types** and displays an error message if some required values are missing or formatted incorrectly. You do not need to care about the possible errors in the server's response.
