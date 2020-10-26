@@ -5,17 +5,17 @@ import toNewPatient from '../utils';
 const router = express.Router();
 
 router.get('/', (_req, res) => {
-    res.send(patientService.getNonSensitivePatientInfo());
+    res.send(patientService.getNonSensitivePatientData());
 });
 
 router.post('/', (req, res) => {
     try {
-      const newPatient = toNewPatient(req.body);
-  
-      const addedPatient = patientService.addPatient(newPatient);
-      res.json(addedPatient);
-    } catch (e) {
-      res.status(400).send(e.message);
+        const newPatient = toNewPatient(req.body);
+    
+        const addedPatient = patientService.addPatient(newPatient);
+        res.json(addedPatient);
+    } catch (err) {
+        res.status(400).send(err.message);
     }
 });
 
