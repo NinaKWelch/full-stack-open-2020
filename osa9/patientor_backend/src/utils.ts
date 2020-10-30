@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewPatient, Gender } from './types';
+import { NewPatient, Gender, Entry } from './types';
 
 const isString = (text: any): text is string => (
     typeof text === 'string' || text instanceof String
 );
 
-const parseEntry = (param: string, entry: any): string => {
-    if (!entry || !isString(entry)) {
-        throw new Error(`Incorrect or missing ${param}`);
+const parseValue = (key: string, value: any): string => {
+    if (!value || !isString(value)) {
+        throw new Error(`Incorrect or missing ${key}`);
     }
 
-    return entry;
+    return value;
 };
 
 const isDate = (date: string): boolean => Boolean(Date.parse(date));
@@ -35,12 +35,25 @@ const parseGender = (gender: any): Gender => {
     return gender;
 };
 
-const toNewPatient = (patient: any): NewPatient => ({
-    name: parseEntry('name', patient.name),
+const isArray = (arr: any): arr is Entry[] => (
+    Array.isArray(arr) || arr instanceof Array
+);
+
+const parseEntries = (entries: any): Entry[] => {
+    if (!entries || !isArray(entries)) {
+        throw new Error(`Incorrect or missing entries`);
+    }
+
+    return entries;
+};
+
+export const toNewPatient = (patient: any): NewPatient => ({
+    name: parseValue('name', patient.name),
     dateOfBirth: parseDate(patient.dateOfBirth),
-    ssn: parseEntry('social security number', patient.ssn),
+    ssn: parseValue('social security number', patient.ssn),
     gender: parseGender(patient.gender),
-    occupation: parseEntry('occupation', patient.occupation)
+    occupation: parseValue('occupation', patient.occupation),
+    entries: parseEntries(patient.entries)
 });
 
-export default toNewPatient;
+export const toPatientId = (id: any): string => parseValue('id', id);
