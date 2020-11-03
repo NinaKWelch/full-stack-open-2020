@@ -19,7 +19,7 @@ export interface Patient {
     name: string;
     dateOfBirth: string;
     ssn: string;
-    gender: Gender;
+    gender: string;
     occupation: string;
     entries: Entry[];
 }

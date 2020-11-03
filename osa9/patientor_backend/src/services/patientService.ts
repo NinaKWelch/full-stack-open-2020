@@ -12,8 +12,7 @@ const getPatient = (id: string): PublicPatient | undefined => {
             name: patient.name,
             dateOfBirth: patient.dateOfBirth,
             gender: patient.gender,
-            occupation: patient.occupation,
-            entries: patient.entries
+            occupation: patient.occupation
         };
     
         return publicPatient;
@@ -23,13 +22,12 @@ const getPatient = (id: string): PublicPatient | undefined => {
 };
 
 const getPublicPatientData = (): PublicPatient[] => (
-    patients.map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({
+    patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
         id,
         name,
         dateOfBirth,
         gender,
-        occupation,
-        entries
+        occupation
     }))
 );
 
