@@ -3,22 +3,10 @@ import { Patient, PublicPatient, NewPatient } from '../types';
 
 const getPatients = (): Patient[] => patients;
 
-const getPatient = (id: string): PublicPatient | undefined => {
+const getPatient = (id: string): Patient | undefined => {
     const patient = patients.find(p => p.id === id);
-    
-    if (patient) {
-        const publicPatient = {
-            id: patient.id,
-            name: patient.name,
-            dateOfBirth: patient.dateOfBirth,
-            gender: patient.gender,
-            occupation: patient.occupation
-        };
-    
-        return publicPatient;
-    }
 
-    return undefined;
+    return patient ? patient : undefined;
 };
 
 const getPublicPatientData = (): PublicPatient[] => (

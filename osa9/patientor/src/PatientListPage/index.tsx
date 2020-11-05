@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 import { apiBaseUrl } from "../constants";
 import { useStateValue } from "../state";
@@ -55,7 +56,9 @@ const PatientListPage: React.FC = () => {
         <tbody>
           {Object.values(patients).map((patient: Patient) => (
             <tr key={patient.id}>
-              <td>{patient.name}</td>
+              <td>
+                <Link to={`/patients/${patient.id}`}>{patient.name}</Link>
+              </td>
               <td>{patient.gender}</td>
               <td>{patient.occupation}</td>
               <td>

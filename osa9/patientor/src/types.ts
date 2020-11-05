@@ -22,3 +22,5 @@ export interface Patient {
   occupation: string;
   entries?: Entry[];
 }
+
+export type PatientId = string;
