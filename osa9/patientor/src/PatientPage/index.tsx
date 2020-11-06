@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 import { apiBaseUrl } from "../constants";
-import { useStateValue } from "../state";
+import { useStateValue, updatePatient } from "../state";
 import { Patient } from "../types";
 
 const PatientPage: React.FC = () => {
@@ -17,7 +17,7 @@ const PatientPage: React.FC = () => {
           `${apiBaseUrl}/patients/${id}`
         );
 
-        dispatch({ type: "UPDATE_PATIENT", payload: patientFromApi.id });
+        dispatch(updatePatient(patientFromApi.id));
       } catch (err) {
         console.error(err);
       }
@@ -46,8 +46,7 @@ const PatientPage: React.FC = () => {
   return (
     <div>
       <h2>
-        {patient.name}
-        {getGender(patient.gender)}
+        {patient.name} | {getGender(patient.gender)}
       </h2>
       <ul>
         <li>Ssn: {patient.ssn}</li>

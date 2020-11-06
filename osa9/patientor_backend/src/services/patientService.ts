@@ -30,7 +30,8 @@ const getId = () => {
 const addPatient = (patient: NewPatient): Patient => {
     const newPatient = {
         id: getId(),
-        ...patient,
+        entries: [],
+        ...patient
     };
 
     patients.push(newPatient);
