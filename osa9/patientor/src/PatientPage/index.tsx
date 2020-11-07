@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 import { apiBaseUrl } from "../constants";
 import { useStateValue, updatePatient } from "../state";
-import { Patient } from "../types";
+import { Patient, BaseEntry, Diagnosis } from "../types";
 
 const PatientPage: React.FC = () => {
   const [{ patient }, dispatch] = useStateValue();
@@ -17,7 +17,7 @@ const PatientPage: React.FC = () => {
           `${apiBaseUrl}/patients/${id}`
         );
 
-        dispatch(updatePatient(patientFromApi.id));
+        dispatch(updatePatient(patientFromApi));
       } catch (err) {
         console.error(err);
       }
@@ -39,6 +39,14 @@ const PatientPage: React.FC = () => {
     }
   };
 
+  const checkCodes = (codes: Array<Diagnosis["code"]> | undefined) => {
+    if (!codes) {
+      return "";
+    }
+
+    return codes.map((code: Diagnosis["code"]) => <li key={code}>{code}</li>);
+  };
+
   if (!patient) {
     return <p>No such patient in the database.</p>;
   }
@@ -52,6 +60,19 @@ const PatientPage: React.FC = () => {
         <li>Ssn: {patient.ssn}</li>
         <li>Occupation: {patient.occupation}</li>
       </ul>
+      <h4>Entries</h4>
+      {patient.entries && patient.entries.length > 0 ? (
+        patient.entries.map((entry: BaseEntry) => (
+          <div key={entry.id}>
+            <p>
+              {entry.date} {entry.description}
+            </p>
+            <ul>{checkCodes(entry.diagnosisCodes)}</ul>
+          </div>
+        ))
+      ) : (
+        <p>No entries</p>
+      )}
     </div>
   );
 };
