@@ -4,7 +4,7 @@ export interface Diagnosis {
   latin?: string;
 }
 
-export interface BaseEntry {
+interface BaseEntry {
   id: string;
   description: string;
   date: string;

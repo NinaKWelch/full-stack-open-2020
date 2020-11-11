@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewPatient, Gender/*, Entry*/ } from './types';
+import { NewPatient, Gender, NewEntry, EntryType, HealthCheckRating } from './types';
 
 const isString = (text: any): text is string => (
     typeof text === 'string' || text instanceof String
@@ -35,6 +37,33 @@ const parseGender = (gender: any): Gender => {
     return gender;
 };
 
+const isType = (param: any): param is EntryType => (
+    param === 'Hospital' || 
+    param === 'OccupationalHealthcare' ||
+    param === 'HealthCheck'
+);
+
+
+const parseType = (type: any): EntryType => {
+    if (!type || !isType(type)) {
+        throw new Error('Incorrect or missing type');
+    }
+
+    return type;
+};
+
+const isRating = (param: any): param is HealthCheckRating => (
+    Object.values(HealthCheckRating).includes(param)
+);
+
+const parseRating = (rating: any): HealthCheckRating => {
+    if (!rating || !isRating(rating)) {
+        throw new Error('Incorrect or missing rating');
+    }
+
+    return rating;
+};
+
 /*
 const isArray = (arr: any): arr is Entry[] => (
     Array.isArray(arr) || arr instanceof Array
@@ -58,3 +87,26 @@ export const toNewPatient = (patient: any): NewPatient => ({
 });
 
 export const toPatientId = (id: any): string => parseValue('id', id);
+
+export const toNewEntry = (entry: any): NewEntry => {
+    const newEntry = {
+        description: parseValue('description', entry.description),
+        date: parseDate(entry.date),
+        specialist: parseValue('specialist', entry.specialist),
+        type: parseType(entry.type)
+    };
+
+    switch(entry.type) {
+        case "OccupationalHealthcare":
+            return {
+                ...newEntry,
+                employerName: parseValue('employer name', entry.employerName)
+            };
+        case "HealthCheck":
+            return {
+                ...newEntry,
+                healthCheckRating: parseRating(entry.healthCheckRating)
+            };
+        default: return newEntry;
+    }
+};
