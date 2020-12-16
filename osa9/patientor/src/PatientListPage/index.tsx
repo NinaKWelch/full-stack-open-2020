@@ -1,25 +1,29 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 import { apiBaseUrl } from "../constants";
 import { useStateValue, addPatient } from "../state";
 import { Patient } from "../types";
 import { PatientFormValues } from "../AddPatientModal/AddPatientForm";
+
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+
+import PatientList from "./PatientList";
 import AddPatientModal from "../AddPatientModal";
-import HealthRatingBar from "../components/HealthRatingBar";
 
 const PatientListPage: React.FC = () => {
   const [{ patients }, dispatch] = useStateValue();
-
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>();
 
-  const openModal = (): void => setModalOpen(true);
+  const handleOpen = () => setOpen(true);
 
-  const closeModal = (): void => {
-    setModalOpen(false);
-    setError(undefined);
+  const handleError = () => setError(undefined);
+
+  const handleClose = () => {
+    setOpen(false);
+    handleError();
   };
 
   const submitNewPatient = async (values: PatientFormValues) => {
@@ -29,52 +33,36 @@ const PatientListPage: React.FC = () => {
         values
       );
 
+      handleClose();
       dispatch(addPatient(newPatient));
-      closeModal();
-    } catch (err) {
-      console.log(err);
-      //console.error(err.response.data);
-      //setError(err.response.data.error);
+    } catch (err: unknown) {
+      typeof err;
+      // console.error(err.response.data);
+      // setError(err.response.data.error);
     }
   };
 
   return (
-    <div>
-      <div>
-        <h3>Patient list</h3>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Gender</th>
-            <th>Occupation</th>
-            <th>Health Rating</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.values(patients).map((patient: Patient) => (
-            <tr key={patient.id}>
-              <td>
-                <Link to={`/patients/${patient.id}`}>{patient.name}</Link>
-              </td>
-              <td>{patient.gender}</td>
-              <td>{patient.occupation}</td>
-              <td>
-                <HealthRatingBar rating={1} showText={false} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <AddPatientModal
-        modalOpen={modalOpen}
-        onSubmit={submitNewPatient}
-        error={error}
-        onClose={closeModal}
-      />
-      <button onClick={() => openModal()}>Add New Patient</button>
-    </div>
+    <>
+      <Grid container alignContent="center">
+        <Typography
+          variant="h4"
+          component="h3"
+          color="textPrimary"
+          style={{ marginRight: 25 }}
+        >
+          Patient list
+        </Typography>
+        <AddPatientModal
+          handleSubmit={submitNewPatient}
+          handleOpen={handleOpen}
+          handleClose={handleClose}
+          open={open}
+          error={error}
+        />
+      </Grid>
+      <PatientList patients={Object.values(patients)} />
+    </>
   );
 };
 

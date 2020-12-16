@@ -1,16 +1,31 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
 import { apiBaseUrl } from "../constants";
 import { useStateValue, updatePatient } from "../state";
 import { Patient } from "../types";
+import { EntryFormValues } from "../AddEntryModal/AddEntryForm";
 
-import EntryDetails from "./EntryDetails";
+import Typography from "@material-ui/core/Typography";
+
+import PatientDetails from "./PatientDetails";
+import PatientEntries from "./PatientEntries";
 
 const PatientPage: React.FC = () => {
-  const [{ patient }, dispatch] = useStateValue();
+  const [{ patients, patient }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
+  const [open, setOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string | undefined>();
+
+  const handleOpen = () => setOpen(true);
+
+  const handleError = () => setError(undefined);
+
+  const handleClose = () => {
+    setOpen(false);
+    handleError();
+  };
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -20,49 +35,60 @@ const PatientPage: React.FC = () => {
         );
 
         dispatch(updatePatient(patientFromApi));
-      } catch (err) {
-        console.error(err);
+      } catch (err: unknown) {
+        typeof err;
+        // console.error(err.response.data);
+        // setError(err.response.data.error);
       }
     };
 
     if (!patient || patient.id !== id) {
-      void fetchPatient();
+      const checkPatientList = Object.keys(patients).includes(id);
+
+      checkPatientList ? void fetchPatient() : null;
     }
   }, [patient]);
 
-  const getGender = (option: string) => {
-    switch (option) {
-      case "male":
-        return "MALE";
-      case "female":
-        return "FEMALE";
-      default:
-        return "OTHER";
+  const submitNewEntry = async (values: EntryFormValues) => {
+    try {
+      const { data: updatedEntries } = await axios.post<Patient["entries"]>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        values
+      );
+
+      if (patient) {
+        const updatedPatient = {
+          ...patient,
+          entries: updatedEntries,
+        };
+
+        console.log(updatedPatient);
+        handleClose();
+        dispatch(updatePatient(updatedPatient));
+      }
+    } catch (err: unknown) {
+      typeof err;
+      // console.error(err.response.data);
+      // setError(err.response.data.error);
     }
   };
 
   if (!patient) {
-    return <p>No such patient in the database.</p>;
+    return <Typography>No such patient exist in the database.</Typography>;
   }
 
   return (
-    <div>
-      <h2>
-        {patient.name} | {getGender(patient.gender)}
-      </h2>
-      <ul>
-        <li>Ssn: {patient.ssn}</li>
-        <li>Occupation: {patient.occupation}</li>
-      </ul>
-      <h3>Entries</h3>
-      {patient.entries && patient.entries.length > 0 ? (
-        patient.entries.map((entry) => (
-          <EntryDetails key={entry.id} entry={entry} />
-        ))
-      ) : (
-        <p>No entries</p>
-      )}
-    </div>
+    <>
+      <PatientDetails patient={patient} />
+      <PatientEntries
+        entries={patient.entries}
+        handleSubmit={submitNewEntry}
+        handleOpen={handleOpen}
+        handleClose={handleClose}
+        open={open}
+        error={error}
+      />
+    </>
   );
 };
 

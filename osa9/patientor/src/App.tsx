@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
 import axios from "axios";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import { apiBaseUrl } from "./constants";
 import { useStateValue, setPatientList, setDiagnosisList } from "./state";
 import { Patient, Diagnosis } from "./types";
 
+import Container from "@material-ui/core/Container";
+
+import Header from "./components/Header";
 import PatientListPage from "./PatientListPage";
 import PatientPage from "./PatientPage";
 
@@ -44,19 +47,17 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div>
-        <h1>Patientor</h1>
-        <Link to="/">Home</Link>
+      <Container>
+        <Header />
         <Switch>
           <Route path="/patients/:id">
             <PatientPage />
           </Route>
-
           <Route exact path="/">
             <PatientListPage />
           </Route>
         </Switch>
-      </div>
+      </Container>
     </Router>
   );
 };

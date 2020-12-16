@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
 import { reducer, StateProvider } from "./state";
 // import reportWebVitals from './reportWebVitals';
+
+import App from "./App";
 
 ReactDOM.render(
   <StateProvider reducer={reducer}>

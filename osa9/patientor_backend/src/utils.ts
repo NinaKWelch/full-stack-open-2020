@@ -64,19 +64,18 @@ const parseRating = (rating: any): HealthCheckRating => {
     return rating;
 };
 
-/*
-const isArray = (arr: any): arr is Entry[] => (
+const isArray = (arr: any): arr is string[] => (
     Array.isArray(arr) || arr instanceof Array
 );
 
-const parseEntries = (entries: any): Entry[] => {
-    if (!entries || !isArray(entries)) {
-        throw new Error(`Incorrect or missing entries`);
+const parseCodes = (codes: any): string[] => {
+    if (!isArray(codes)) {
+        throw new Error('Incorrect codes');
     }
 
-    return entries;
+    return codes;
 };
-*/
+
 
 export const toNewPatient = (patient: any): NewPatient => ({
     name: parseValue('name', patient.name),
@@ -93,7 +92,8 @@ export const toNewEntry = (entry: any): NewEntry => {
         description: parseValue('description', entry.description),
         date: parseDate(entry.date),
         specialist: parseValue('specialist', entry.specialist),
-        type: parseType(entry.type)
+        type: parseType(entry.type),
+        diagnosisCodes: parseCodes(entry.diagnosisCodes)
     };
 
     switch(entry.type) {

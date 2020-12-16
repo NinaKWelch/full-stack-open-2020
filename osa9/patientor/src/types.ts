@@ -50,6 +50,12 @@ export type Entry =
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
 
+export enum Type {
+  Hospital = "Hospital",
+  OccupationalHealthcare = "OccupationalHealthcare",
+  HealthCheck = "HealthCheck",
+}
+
 export enum Gender {
   Male = "male",
   Female = "female",
@@ -67,3 +73,9 @@ export interface Patient {
 }
 
 export type PatientId = string;
+
+export interface CombinedEntry extends BaseEntry {
+  type: Type;
+  employerName?: string;
+  healthCheckRating?: HealthCheckRating;
+}

@@ -1,19 +1,19 @@
 import React from "react";
-import AddPatientForm, { PatientFormValues } from "./AddPatientForm";
+import AddEntryForm, { EntryFormValues } from "./AddEntryForm";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import Typography from "@material-ui/core/Typography";
 
 interface Props {
-  handleSubmit: (values: PatientFormValues) => void;
+  handleSubmit: (values: EntryFormValues) => void;
   handleOpen: () => void;
   handleClose: () => void;
   open: boolean;
   error?: string;
 }
 
-const AddPatentModal: React.FC<Props> = ({
+const AddEntryModal: React.FC<Props> = ({
   handleSubmit,
   handleOpen,
   handleClose,
@@ -22,7 +22,7 @@ const AddPatentModal: React.FC<Props> = ({
 }) => (
   <div>
     <Button type="button" variant="outlined" onClick={handleOpen}>
-      Add New Patient
+      Add New Entry
     </Button>
     <Dialog
       open={open}
@@ -34,9 +34,9 @@ const AddPatentModal: React.FC<Props> = ({
       }}
     >
       {error && <Typography color="secondary">Error: {error}</Typography>}
-      <AddPatientForm onSubmit={handleSubmit} onCancel={handleClose} />
+      <AddEntryForm onSubmit={handleSubmit} onCancel={handleClose} />
     </Dialog>
   </div>
 );
 
-export default AddPatentModal;
+export default AddEntryModal;
