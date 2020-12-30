@@ -22,7 +22,7 @@ export interface HospitalEntry extends BaseEntry {
   discharge?: Discharge;
 }
 
-interface SickLeave {
+export interface SickLeave {
   startDate: string;
   endDate: string;
 }
@@ -76,6 +76,8 @@ export type PatientId = string;
 
 export interface CombinedEntry extends BaseEntry {
   type: Type;
+  discharge?: Discharge;
   employerName?: string;
   healthCheckRating?: HealthCheckRating;
+  sickLeave?: SickLeave;
 }

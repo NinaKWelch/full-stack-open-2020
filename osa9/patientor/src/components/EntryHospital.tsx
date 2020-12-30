@@ -16,6 +16,16 @@ const EntryHospital: React.FC<{ entry: HospitalEntry }> = ({ entry }) => (
       {entry.diagnosisCodes && entry.diagnosisCodes.length > 0 ? (
         <EntryDiagnosis codes={entry.diagnosisCodes} />
       ) : null}
+      {entry.discharge && (
+        <>
+          <Typography component="p">
+            Discharged from hospital on {entry.discharge.date}.
+          </Typography>
+          <Typography component="p">
+            Discharge criteria: {entry.discharge.criteria}.
+          </Typography>
+        </>
+      )}
     </CardContent>
   </EntryCard>
 );

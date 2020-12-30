@@ -18,6 +18,13 @@ const EntryOccupationalHealthcare: React.FC<{
       {entry.diagnosisCodes && entry.diagnosisCodes.length > 0 ? (
         <EntryDiagnosis codes={entry.diagnosisCodes} />
       ) : null}
+      {entry.sickLeave && (
+        <Typography component="p">
+          On sick leave from {entry.sickLeave.startDate} to{" "}
+          {entry.sickLeave.endDate}.
+        </Typography>
+      )}
+      <Typography component="p">Employer: {entry.employerName}</Typography>
     </CardContent>
   </EntryCard>
 );

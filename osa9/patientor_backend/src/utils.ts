@@ -19,7 +19,7 @@ const isDate = (date: string): boolean => Boolean(Date.parse(date));
  
 const parseDate = (date: any): string => {
     if (!date || !isString(date) || !isDate(date)) {
-        throw new Error('Incorrect or missing date of birth');
+        throw new Error('Incorrect or missing date');
     }
 
     return date;
@@ -97,7 +97,30 @@ export const toNewEntry = (entry: any): NewEntry => {
     };
 
     switch(entry.type) {
+        case "Hospital":
+            if (entry.discharge.date) {
+                return {
+                    ...newEntry,
+                    discharge: {
+                        date: parseDate(entry.discharge.date),
+                        criteria: parseValue('criteria', entry.discharge.criteria)
+                    }
+                };
+            }
+
+           return newEntry;
         case "OccupationalHealthcare":
+            if (entry.sickLeave.startDate) {
+                return {
+                    ...newEntry,
+                    employerName: parseValue('employer name', entry.employerName),
+                    sickLeave: {
+                        startDate: parseDate(entry.sickLeave.startDate),
+                        endDate: parseDate(entry.sickLeave.endDate)
+                    }
+                };
+            }
+            
             return {
                 ...newEntry,
                 employerName: parseValue('employer name', entry.employerName)

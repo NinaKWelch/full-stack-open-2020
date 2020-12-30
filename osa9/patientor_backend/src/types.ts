@@ -63,8 +63,10 @@ export type Entry =
 
 export interface CombinedEntry extends BaseEntry {
     type: EntryType;
+    discharge?: Discharge;
     employerName?: string;
     healthCheckRating?: HealthCheckRating;
+    sickLeave?: SickLeave;
 } 
 
 export type NewEntry = Omit<CombinedEntry, 'id'>;
