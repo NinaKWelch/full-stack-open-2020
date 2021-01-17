@@ -4,6 +4,16 @@ export interface Diagnosis {
     latin?: string;
 }
 
+interface Discharge {
+    date: string;
+    criteria: string;
+}
+
+interface SickLeave  {
+    startDate: string;
+    endDate: string;
+}
+
 export enum HealthCheckRating {
     "Healthy" = 0,
     "LowRisk" = 1,
@@ -17,21 +27,7 @@ export enum Gender {
     Female = 'female',
 }
 
-export type EntryType = 
-    "Hospital" |
-    "OccupationalHealthcare" |
-    "HealthCheck";
-
-interface Discharge {
-    date: string;
-    criteria: string;
-}
-
-interface SickLeave  {
-    startDate: string;
-    endDate: string;
-}
-
+// entry types
 interface BaseEntry {
     id: string;
     description: string;
@@ -61,16 +57,7 @@ export type Entry =
    | OccupationalHealthcareEntry
    | HealthCheckEntry;
 
-export interface CombinedEntry extends BaseEntry {
-    type: EntryType;
-    discharge?: Discharge;
-    employerName?: string;
-    healthCheckRating?: HealthCheckRating;
-    sickLeave?: SickLeave;
-} 
-
-export type NewEntry = Omit<CombinedEntry, 'id'>;
-
+// patient
 export interface Patient {
     id: string;
     name: string;
@@ -84,5 +71,23 @@ export interface Patient {
 export type PublicPatient = Omit<Patient, 'ssn' | 'entries' >;
 
 export type NewPatient = Omit<Patient, 'id' | 'entries' >;
+
+// new entry
+export type Type = 
+    "Hospital" |
+    "OccupationalHealthcare" |
+    "HealthCheck";
+
+export interface NewEntry extends BaseEntry {
+    type: Type;
+    discharge?: Discharge;
+    employerName?: string;
+    healthCheckRating?: HealthCheckRating;
+    sickLeave?: SickLeave;
+} 
+
+
+
+
 
 

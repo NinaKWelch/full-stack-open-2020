@@ -59,7 +59,6 @@ const PatientPage: React.FC = () => {
           entries: updatedEntries,
         };
 
-        console.log(updatedPatient);
         handleClose();
         dispatch(updatePatient(updatedPatient));
       }

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewPatient, Gender, NewEntry, EntryType, HealthCheckRating } from './types';
+import { NewPatient, NewEntry, Gender, Type, HealthCheckRating } from './types';
 
 const isString = (text: any): text is string => (
     typeof text === 'string' || text instanceof String
@@ -37,14 +37,13 @@ const parseGender = (gender: any): Gender => {
     return gender;
 };
 
-const isType = (param: any): param is EntryType => (
+const isType = (param: any): param is Type => (
     param === 'Hospital' || 
     param === 'OccupationalHealthcare' ||
     param === 'HealthCheck'
 );
 
-
-const parseType = (type: any): EntryType => {
+const parseType = (type: any): Type => {
     if (!type || !isType(type)) {
         throw new Error('Incorrect or missing type');
     }
@@ -87,7 +86,7 @@ export const toNewPatient = (patient: any): NewPatient => ({
 
 export const toPatientId = (id: any): string => parseValue('id', id);
 
-export const toNewEntry = (entry: any): NewEntry => {
+export const toNewEntry = (entry: any): Omit<NewEntry, "id"> => {
     const newEntry = {
         description: parseValue('description', entry.description),
         date: parseDate(entry.date),

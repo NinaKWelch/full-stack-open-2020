@@ -14,8 +14,10 @@ router.get('/:id', (req, res) => {
         const patient = patientService.getPatient(id);
         
         patient ? res.send(patient) : res.status(404).end();
-    } catch (err) {
-        res.status(400).send(err.message);
+    } catch (err: unknown) {
+        err instanceof Error
+            ? res.status(400).send(err.message)
+            : res.status(500).send("Unknown Error");
     }
 });
 
@@ -25,8 +27,10 @@ router.get('/:id/entries', (req, res) => {
         const patient = patientService.getPatient(id);
         
         patient ? res.send(patient.entries) : res.status(404).end();
-    } catch (err) {
-        res.status(400).send(err.message);
+    } catch (err: unknown) {
+        err instanceof Error
+            ? res.status(400).send(err.message)
+            : res.status(500).send("Unknown Error");
     }
 });
 
@@ -36,8 +40,10 @@ router.post('/', (req, res) => {
         const addedPatient = patientService.addPatient(newPatient);
 
         res.json(addedPatient);
-    } catch (err) {
-        res.status(400).send(err.message);
+    } catch (err: unknown) {
+        err instanceof Error
+            ? res.status(400).send(err.message)
+            : res.status(500).send("Unknown Error");
     }
 });
 
@@ -49,8 +55,10 @@ router.post('/:id/entries', (req, res) => {
         const updatedEntries = patientService.addPatientEntry(id, newEntry);
 
         res.json(updatedEntries);
-    } catch (err) {
-        res.status(400).send(err.message);
+    } catch (err: unknown) {
+        err instanceof Error
+            ? res.status(400).send(err.message)
+            : res.status(500).send("Unknown Error");
     }
 });
 

@@ -85,26 +85,3 @@ export interface EntryFormValues extends Omit<BaseEntry, "id"> {
   healthCheckRating?: HealthCheckRating;
   sickLeave?: SickLeave;
 }
-
-/*interface EntryFormValues {
-    date: string;
-    type: Type;
-    specialist: string;
-    employerName: string;
-    diagnosisCodes?: Array<Diagnosis["code"]>;
-    description: string;
-    discharge?: Discharge;
-    sickLeave?: SickLeave;
-    healthCheckRating?: HealthCheckRating;
-}
-
- interface PatientFormValues {
-  name: string;
-  dateOfBirth: string;
-  ssn: string;
-  gender: Gender;
-  occupation: string;
-}
-
-export type PatientId = string;
-*/

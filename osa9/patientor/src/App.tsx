@@ -1,16 +1,14 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-
 import { apiBaseUrl } from "./constants";
 import { useStateValue, setPatientList, setDiagnosisList } from "./state";
 import { Patient, Diagnosis } from "./types";
-
-import Container from "@material-ui/core/Container";
-
 import Header from "./components/Header";
 import PatientListPage from "./PatientListPage";
 import PatientPage from "./PatientPage";
+
+import Container from "@material-ui/core/Container";
 
 const App: React.FC = () => {
   const [, dispatch] = useStateValue();
