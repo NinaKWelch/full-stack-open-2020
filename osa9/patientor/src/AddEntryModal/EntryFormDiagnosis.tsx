@@ -16,7 +16,7 @@ interface Props {
   codes: string[] | undefined;
 }
 
-const DiagnosisSelection: React.FC<Props> = ({
+const EntryFormDiagnosis: React.FC<Props> = ({
   setFieldValue,
   setFieldTouched,
   diagnoses,
@@ -51,7 +51,7 @@ const DiagnosisSelection: React.FC<Props> = ({
               {selected.length === 0 ? "Add Diagnosis" : selected.join(", ")}
             </Typography>
           )}
-          inputProps={{ "aria-label": "Diagnosis selection" }}
+          inputProps={{ "aria-label": "diagnosis" }}
         >
           <MenuItem disabled value="">
             <Typography variant="inherit">Diagnosis</Typography>
@@ -63,4 +63,4 @@ const DiagnosisSelection: React.FC<Props> = ({
   );
 };
 
-export default DiagnosisSelection;
+export default EntryFormDiagnosis;

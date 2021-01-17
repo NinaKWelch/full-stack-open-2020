@@ -4,6 +4,30 @@ export interface Diagnosis {
   latin?: string;
 }
 
+export interface Discharge {
+  date: string;
+  criteria: string;
+}
+
+export interface SickLeave {
+  startDate: string;
+  endDate: string;
+}
+
+export enum HealthCheckRating {
+  "Healthy" = 1,
+  "LowRisk" = 2,
+  "HighRisk" = 3,
+  "CriticalRisk" = 4,
+}
+
+export enum Gender {
+  Other = "other",
+  Male = "male",
+  Female = "female",
+}
+
+// entry types
 interface BaseEntry {
   id: string;
   description: string;
@@ -12,32 +36,15 @@ interface BaseEntry {
   diagnosisCodes?: Array<Diagnosis["code"]>;
 }
 
-interface Discharge {
-  date: string;
-  criteria: string;
-}
-
 export interface HospitalEntry extends BaseEntry {
   type: "Hospital";
   discharge?: Discharge;
-}
-
-export interface SickLeave {
-  startDate: string;
-  endDate: string;
 }
 
 export interface OccupationalHealthcareEntry extends BaseEntry {
   type: "OccupationalHealthcare";
   employerName: string;
   sickLeave?: SickLeave;
-}
-
-export enum HealthCheckRating {
-  "Healthy" = 0,
-  "LowRisk" = 1,
-  "HighRisk" = 2,
-  "CriticalRisk" = 3,
 }
 
 export interface HealthCheckEntry extends BaseEntry {
@@ -50,34 +57,54 @@ export type Entry =
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
 
+// patient
+export interface Patient {
+  id: string;
+  name: string;
+  dateOfBirth?: string;
+  ssn?: string;
+  gender: Gender;
+  occupation: string;
+  entries?: Array<Entry>;
+}
+
+// patient form
+export type PatientFormValues = Omit<Patient, "id">;
+
+// entry form
 export enum Type {
   Hospital = "Hospital",
   OccupationalHealthcare = "OccupationalHealthcare",
   HealthCheck = "HealthCheck",
 }
 
-export enum Gender {
-  Male = "male",
-  Female = "female",
-  Other = "other",
-}
-
-export interface Patient {
-  id: string;
-  name: string;
-  dateOfBirth?: string;
-  ssn?: string;
-  gender: string;
-  occupation: string;
-  entries?: Array<Entry>;
-}
-
-export type PatientId = string;
-
-export interface CombinedEntry extends BaseEntry {
+export interface EntryFormValues extends Omit<BaseEntry, "id"> {
   type: Type;
   discharge?: Discharge;
   employerName?: string;
   healthCheckRating?: HealthCheckRating;
   sickLeave?: SickLeave;
 }
+
+/*interface EntryFormValues {
+    date: string;
+    type: Type;
+    specialist: string;
+    employerName: string;
+    diagnosisCodes?: Array<Diagnosis["code"]>;
+    description: string;
+    discharge?: Discharge;
+    sickLeave?: SickLeave;
+    healthCheckRating?: HealthCheckRating;
+}
+
+ interface PatientFormValues {
+  name: string;
+  dateOfBirth: string;
+  ssn: string;
+  gender: Gender;
+  occupation: string;
+}
+
+export type PatientId = string;
+*/

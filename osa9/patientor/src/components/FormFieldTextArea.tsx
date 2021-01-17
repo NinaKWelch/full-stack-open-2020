@@ -11,7 +11,7 @@ interface Props extends FieldProps {
   required?: boolean;
 }
 
-const FormFieldText: React.FC<Props> = ({
+const FormFieldTextArea: React.FC<Props> = ({
   field,
   form: { touched, errors },
   id,
@@ -22,10 +22,12 @@ const FormFieldText: React.FC<Props> = ({
   <Grid item xs={12}>
     <TextField
       fullWidth
+      multiline
       id={id}
       label={label}
       placeholder={placeholder}
       required={required}
+      rows="2"
       error={touched[field.name] && Boolean(errors[field.name])}
       helperText={touched[field.name] && errors[field.name]}
       {...field}
@@ -33,4 +35,4 @@ const FormFieldText: React.FC<Props> = ({
   </Grid>
 );
 
-export default FormFieldText;
+export default FormFieldTextArea;

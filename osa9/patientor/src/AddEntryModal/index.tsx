@@ -1,9 +1,10 @@
 import React from "react";
-import AddEntryForm, { EntryFormValues } from "./AddEntryForm";
+import { EntryFormValues } from "../types";
+import AddEntryForm from "./AddEntryForm";
+import ErrorMessage from "../components/ErrorMessage";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import Typography from "@material-ui/core/Typography";
 
 interface Props {
   handleSubmit: (values: EntryFormValues) => void;
@@ -33,8 +34,8 @@ const AddEntryModal: React.FC<Props> = ({
         justifyContent: "center",
       }}
     >
-      {error && <Typography color="secondary">Error: {error}</Typography>}
       <AddEntryForm onSubmit={handleSubmit} onCancel={handleClose} />
+      {error && <ErrorMessage error={error} />}
     </Dialog>
   </div>
 );

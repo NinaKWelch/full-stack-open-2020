@@ -1,9 +1,10 @@
 import React from "react";
-import AddPatientForm, { PatientFormValues } from "./AddPatientForm";
+import { PatientFormValues } from "../types";
+import AddPatientForm from "./AddPatientForm";
+import ErrorMessage from "../components/ErrorMessage";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import Typography from "@material-ui/core/Typography";
 
 interface Props {
   handleSubmit: (values: PatientFormValues) => void;
@@ -33,8 +34,8 @@ const AddPatentModal: React.FC<Props> = ({
         justifyContent: "center",
       }}
     >
-      {error && <Typography color="secondary">Error: {error}</Typography>}
       <AddPatientForm onSubmit={handleSubmit} onCancel={handleClose} />
+      {error && <ErrorMessage error={error} />}
     </Dialog>
   </div>
 );

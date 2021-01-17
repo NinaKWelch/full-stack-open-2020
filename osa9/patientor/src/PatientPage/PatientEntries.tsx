@@ -1,15 +1,12 @@
 import React from "react";
-import { Entry } from "../types";
-import { EntryFormValues } from "../AddEntryModal/AddEntryForm";
+import { Entry, EntryFormValues } from "../types";
+import AddEntryModal from "../AddEntryModal";
+import EntryDetails from "../components/EntryDetails";
 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
-import AddEntryModal from "../AddEntryModal";
-import EntryDetails from "../components/EntryDetails";
-// import { OpenInFull } from '@material-ui/icons';
-
-interface Props {
+interface EntryProps {
   entries: Entry[] | undefined;
   handleSubmit: (values: EntryFormValues) => void;
   handleOpen: () => void;
@@ -18,7 +15,7 @@ interface Props {
   error?: string;
 }
 
-const PatientEntries: React.FC<Props> = ({
+const PatientEntries: React.FC<EntryProps> = ({
   entries,
   handleSubmit,
   handleOpen,
@@ -46,7 +43,13 @@ const PatientEntries: React.FC<Props> = ({
       {entries && entries.length > 0 ? (
         entries.map((entry) => <EntryDetails key={entry.id} entry={entry} />)
       ) : (
-        <Typography color="textSecondary">No entries</Typography>
+        <Typography
+          component="h6"
+          color="textSecondary"
+          style={{ marginLeft: 15 }}
+        >
+          No entries
+        </Typography>
       )}
     </Grid>
   </Grid>

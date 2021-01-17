@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-
 import { apiBaseUrl } from "../constants";
 import { useStateValue, updatePatient } from "../state";
-import { Patient } from "../types";
-import { EntryFormValues } from "../AddEntryModal/AddEntryForm";
-
-import Typography from "@material-ui/core/Typography";
-
+import { Patient, EntryFormValues } from "../types";
 import PatientDetails from "./PatientDetails";
 import PatientEntries from "./PatientEntries";
+
+import Typography from "@material-ui/core/Typography";
 
 const PatientPage: React.FC = () => {
   const [{ patients, patient }, dispatch] = useStateValue();
@@ -36,9 +33,9 @@ const PatientPage: React.FC = () => {
 
         dispatch(updatePatient(patientFromApi));
       } catch (err: unknown) {
-        typeof err;
-        // console.error(err.response.data);
-        // setError(err.response.data.error);
+        err instanceof Error
+          ? setError(err.message)
+          : setError("Unknown Error");
       }
     };
 
@@ -67,9 +64,7 @@ const PatientPage: React.FC = () => {
         dispatch(updatePatient(updatedPatient));
       }
     } catch (err: unknown) {
-      typeof err;
-      // console.error(err.response.data);
-      // setError(err.response.data.error);
+      err instanceof Error ? setError(err.message) : setError("Unknown Error");
     }
   };
 

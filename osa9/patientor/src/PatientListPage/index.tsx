@@ -1,25 +1,22 @@
 import React, { useState } from "react";
 import axios from "axios";
-
 import { apiBaseUrl } from "../constants";
 import { useStateValue, addPatient } from "../state";
-import { Patient } from "../types";
-import { PatientFormValues } from "../AddPatientModal/AddPatientForm";
+import { Patient, PatientFormValues } from "../types";
+import PatientList from "./PatientList";
+import AddPatientModal from "../AddPatientModal";
 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-
-import PatientList from "./PatientList";
-import AddPatientModal from "../AddPatientModal";
 
 const PatientListPage: React.FC = () => {
   const [{ patients }, dispatch] = useStateValue();
   const [open, setOpen] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>();
 
-  const handleOpen = () => setOpen(true);
-
   const handleError = () => setError(undefined);
+
+  const handleOpen = () => setOpen(true);
 
   const handleClose = () => {
     setOpen(false);
@@ -36,9 +33,7 @@ const PatientListPage: React.FC = () => {
       handleClose();
       dispatch(addPatient(newPatient));
     } catch (err: unknown) {
-      typeof err;
-      // console.error(err.response.data);
-      // setError(err.response.data.error);
+      err instanceof Error ? setError(err.message) : setError("Unknown Error");
     }
   };
 

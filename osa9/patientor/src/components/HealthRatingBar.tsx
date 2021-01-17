@@ -1,10 +1,5 @@
 import React from "react";
 
-type BarProps = {
-  rating: number;
-  showText: boolean;
-};
-
 const HEALTHBAR_TEXTS = [
   "The patient is in great shape",
   "The patient has a low risk of getting sick",
@@ -12,11 +7,20 @@ const HEALTHBAR_TEXTS = [
   "The patient has a diagnosed condition",
 ];
 
+const HEALTHBAR_SHORT_TEXTS = [
+  "Healthy",
+  "Low risk",
+  "High risk",
+  "Critical risk",
+];
+
+type BarProps = {
+  rating: number;
+  showText: boolean;
+};
+
 const HealthRatingBar: React.FC<BarProps> = ({ rating, showText }) => (
-  <div>
-    <p>{rating}</p>
-    {showText ? <p>{HEALTHBAR_TEXTS[rating]}</p> : null}
-  </div>
+  <>{showText ? HEALTHBAR_TEXTS[rating] : HEALTHBAR_SHORT_TEXTS[rating]}</>
 );
 
 export default HealthRatingBar;

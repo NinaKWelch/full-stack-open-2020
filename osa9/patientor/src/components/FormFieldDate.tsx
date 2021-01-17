@@ -1,29 +1,36 @@
 import React from "react";
-import { ErrorMessage, FieldProps } from "formik";
+import { FieldProps } from "formik";
 
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 
-interface DateProps extends FieldProps {
+interface Props extends FieldProps {
+  id: string;
   label: string;
+  required?: boolean;
 }
 
-const FormFieldDate: React.FC<DateProps> = ({ field, label }) => (
+const FormFieldDate: React.FC<Props> = ({
+  field,
+  form: { touched, errors },
+  id,
+  label,
+  required,
+}) => (
   <Grid item xs={12} sm={6}>
     <TextField
-      id={field.name}
+      fullWidth
+      id={id}
       label={label}
+      type="date"
+      required={required}
       InputLabelProps={{
         shrink: true,
       }}
-      type="date"
-      fullWidth
-      required
+      error={touched[field.name] && Boolean(errors[field.name])}
+      helperText={touched[field.name] && errors[field.name]}
       {...field}
     />
-    <div style={{ color: "red" }}>
-      <ErrorMessage name={field.name} />
-    </div>
   </Grid>
 );
 
