@@ -67,6 +67,10 @@ const PatientPage: React.FC = () => {
     }
   };
 
+  if (patient && patient.id !== id) {
+    return <Typography>Loading...</Typography>;
+  }
+
   if (!patient) {
     return <Typography>No such patient exist in the database.</Typography>;
   }

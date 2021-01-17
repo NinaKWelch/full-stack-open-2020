@@ -46,7 +46,7 @@ const PatientListPage: React.FC = () => {
           color="textPrimary"
           style={{ marginRight: 25 }}
         >
-          Patient list
+          Patients
         </Typography>
         <AddPatientModal
           handleSubmit={submitNewPatient}
