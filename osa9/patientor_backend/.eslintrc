@@ -22,4 +22,4 @@
     "parserOptions": {
         "project": "./tsconfig.json"
     }
-  }
+}
