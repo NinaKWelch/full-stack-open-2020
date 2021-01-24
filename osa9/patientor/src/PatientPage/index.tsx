@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 const PatientPage: React.FC = () => {
   const [{ patients, patient }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
+  const [loading, setLoading] = useState<boolean>(true);
   const [open, setOpen] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>();
 
@@ -32,6 +33,7 @@ const PatientPage: React.FC = () => {
         );
 
         dispatch(updatePatient(patientFromApi));
+        setLoading(false);
       } catch (err: unknown) {
         err instanceof Error
           ? setError(err.message)
@@ -42,7 +44,7 @@ const PatientPage: React.FC = () => {
     if (!patient || patient.id !== id) {
       const checkPatientList = Object.keys(patients).includes(id);
 
-      checkPatientList ? void fetchPatient() : null;
+      checkPatientList ? void fetchPatient() : setLoading(false);
     }
   }, [patient]);
 
@@ -67,7 +69,9 @@ const PatientPage: React.FC = () => {
     }
   };
 
-  if (patient && patient.id !== id) {
+  // initially loading is set to true
+  // after first fetch, loading is set to false
+  if (loading || (patient && patient.id !== id)) {
     return <Typography>Loading...</Typography>;
   }
 

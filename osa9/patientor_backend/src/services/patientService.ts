@@ -1,5 +1,11 @@
 import patients from '../../data/patients';
-import { Patient, PublicPatient, NewPatient, NewEntry } from '../types';
+import {
+    Patient,
+    PublicPatient,
+    NewPatient,
+    Entry,
+    NewEntry
+} from '../types';
 
 const getPatients = (): Patient[] => patients;
 
@@ -9,13 +15,28 @@ const getPatient = (id: string): Patient | undefined => {
     return patient ? patient : undefined;
 };
 
+const getRating = (arr: Entry[]): number | string => {
+    const checks = arr.map((obj) =>
+        obj.type === "HealthCheck" ? obj.healthCheckRating : null
+    );
+    // get the latest rating
+    const lastCheck = checks.pop();
+
+    if (typeof lastCheck === "number") {
+        return lastCheck;
+    }
+    
+    return "Not given";
+};
+
 const getPublicPatientData = (): PublicPatient[] => (
-    patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+    patients.map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({
         id,
         name,
         dateOfBirth,
         gender,
-        occupation
+        occupation,
+        healthRating: getRating(entries)
     }))
 );
 

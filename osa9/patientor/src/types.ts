@@ -66,6 +66,7 @@ export interface Patient {
   gender: Gender;
   occupation: string;
   entries?: Array<Entry>;
+  healthRating?: number | string;
 }
 
 // patient form
