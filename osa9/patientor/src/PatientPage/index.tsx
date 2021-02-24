@@ -2,14 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { apiBaseUrl } from "../constants";
-import { useStateValue, updatePatient } from "../state";
+import { useStateValue, updatePatient, addPatient } from "../state";
 import { Patient, EntryFormValues } from "../types";
 import PatientDetails from "./PatientDetails";
 import PatientEntries from "./PatientEntries";
 
 import Typography from "@material-ui/core/Typography";
 
-const PatientPage: React.FC = () => {
+const PatientPage: React.FC<{ handlePatientList: () => void }> = ({
+  handlePatientList,
+}) => {
   const [{ patients, patient }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -25,28 +27,39 @@ const PatientPage: React.FC = () => {
     handleError();
   };
 
-  useEffect(() => {
-    const fetchPatient = async () => {
-      try {
-        const { data: patientFromApi } = await axios.get<Patient>(
-          `${apiBaseUrl}/patients/${id}`
-        );
+  const fetchPatientListFromAPI = () => {
+    handlePatientList();
+  };
 
-        dispatch(updatePatient(patientFromApi));
-        setLoading(false);
-      } catch (err: unknown) {
-        err instanceof Error
-          ? setError(err.message)
-          : setError("Unknown Error");
+  const fetchPatientFromAPI = async () => {
+    try {
+      const { data: patientFromApi } = await axios.get<Patient>(
+        `${apiBaseUrl}/patients/${id}`
+      );
+
+      dispatch(updatePatient(patientFromApi));
+      setLoading(true);
+    } catch (err: unknown) {
+      err instanceof Error ? setError(err.message) : setError("Unknown Error");
+    }
+  };
+
+  useEffect(() => {
+    const fetchPatient = () => {
+      if (!patient || (patient && patient.id !== id)) {
+        const checkPatientList = Object.keys(patients).includes(id);
+
+        checkPatientList ? void fetchPatientFromAPI() : setLoading(false);
       }
     };
 
-    if (!patient || patient.id !== id) {
-      const checkPatientList = Object.keys(patients).includes(id);
-
-      checkPatientList ? void fetchPatient() : setLoading(false);
-    }
-  }, [patient]);
+    // fetch patients form API
+    // when state does not presist
+    // (ie. browser refresh or direct link)
+    Object.keys(patients).length > 1
+      ? fetchPatient()
+      : fetchPatientListFromAPI();
+  }, [patient, patients]);
 
   const submitNewEntry = async (values: EntryFormValues) => {
     try {
@@ -55,14 +68,20 @@ const PatientPage: React.FC = () => {
         values
       );
 
-      if (patient) {
-        const updatedPatient = {
-          ...patient,
-          entries: updatedEntries,
-        };
+      // if new entry type is health check
+      // update patient list with new health rating
+      if (patient && updatedEntries) {
+        if (values.type === "HealthCheck") {
+          const updatedPatient: Patient = {
+            ...patients[patient.id],
+            healthRating: values.healthCheckRating,
+          };
+
+          dispatch(addPatient(updatedPatient));
+        }
 
         handleClose();
-        dispatch(updatePatient(updatedPatient));
+        dispatch(updatePatient({ ...patient, entries: updatedEntries }));
       }
     } catch (err: unknown) {
       err instanceof Error ? setError(err.message) : setError("Unknown Error");
@@ -71,7 +90,7 @@ const PatientPage: React.FC = () => {
 
   // initially loading is set to true
   // after first fetch, loading is set to false
-  if (loading || (patient && patient.id !== id)) {
+  if ((!patient && loading) || (patient && patient.id !== id)) {
     return <Typography>Loading...</Typography>;
   }
 

@@ -1,13 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NewPatient, NewEntry, Gender, Type, HealthCheckRating } from './types';
 
-const isString = (text: any): text is string => (
+const isString = (text: unknown): text is string => (
     typeof text === 'string' || text instanceof String
 );
 
-const parseValue = (key: string, value: any): string => {
+const parseValue = (key: string, value: unknown): string => {
     if (!value || !isString(value)) {
         throw new Error(`Incorrect or missing ${key}`);
     }
@@ -17,7 +17,7 @@ const parseValue = (key: string, value: any): string => {
 
 const isDate = (date: string): boolean => Boolean(Date.parse(date));
  
-const parseDate = (date: any): string => {
+const parseDate = (date: unknown): string => {
     if (!date || !isString(date) || !isDate(date)) {
         throw new Error('Incorrect or missing date');
     }
@@ -25,11 +25,13 @@ const parseDate = (date: any): string => {
     return date;
 };
 
-const isGender = (param: any): param is Gender => (
-    Object.values(Gender).includes(param)
+const isGender = (param: unknown): param is Gender => (
+    param === Gender.Other ||
+    param === Gender.Male  ||
+    param === Gender.Female
 );
 
-const parseGender = (gender: any): Gender => {
+const parseGender = (gender: unknown): Gender => {
     if (!gender || !isGender(gender)) {
         throw new Error('Incorrect or missing gender');
     }
@@ -37,13 +39,13 @@ const parseGender = (gender: any): Gender => {
     return gender;
 };
 
-const isType = (param: any): param is Type => (
+const isType = (param: unknown): param is Type => (
     param === 'Hospital' || 
     param === 'OccupationalHealthcare' ||
     param === 'HealthCheck'
 );
 
-const parseType = (type: any): Type => {
+const parseType = (type: unknown): Type => {
     if (!type || !isType(type)) {
         throw new Error('Incorrect or missing type');
     }
@@ -51,11 +53,14 @@ const parseType = (type: any): Type => {
     return type;
 };
 
-const isRating = (param: any): param is HealthCheckRating => (
-    Object.values(HealthCheckRating).includes(param)
+const isRating = (param: unknown): param is HealthCheckRating => (
+    param === HealthCheckRating.Healthy || 
+    param === HealthCheckRating.LowRisk ||
+    param === HealthCheckRating.HighRisk ||
+    param === HealthCheckRating.CriticalRisk
 );
 
-const parseRating = (rating: any): HealthCheckRating => {
+const parseRating = (rating: unknown): HealthCheckRating => {
     if (!rating || !isRating(rating)) {
         throw new Error('Incorrect or missing rating');
     }
@@ -63,18 +68,17 @@ const parseRating = (rating: any): HealthCheckRating => {
     return rating;
 };
 
-const isArray = (arr: any): arr is string[] => (
+const isArray = (arr: unknown): arr is string[] => (
     Array.isArray(arr) || arr instanceof Array
 );
 
-const parseCodes = (codes: any): string[] => {
+const parseCodes = (codes: unknown): string[] => {
     if (!isArray(codes)) {
         throw new Error('Incorrect codes');
     }
 
     return codes;
 };
-
 
 export const toNewPatient = (patient: any): NewPatient => ({
     name: parseValue('name', patient.name),
@@ -84,7 +88,7 @@ export const toNewPatient = (patient: any): NewPatient => ({
     occupation: parseValue('occupation', patient.occupation)
 });
 
-export const toPatientId = (id: any): string => parseValue('id', id);
+export const toPatientId = (id: unknown): string => parseValue('id', id);
 
 export const toNewEntry = (entry: any): Omit<NewEntry, "id"> => {
     const newEntry = {

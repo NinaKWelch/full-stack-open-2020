@@ -19,8 +19,11 @@ type BarProps = {
   showText: boolean;
 };
 
-const HealthRatingBar: React.FC<BarProps> = ({ rating, showText }) => (
-  <>{showText ? HEALTHBAR_TEXTS[rating] : HEALTHBAR_SHORT_TEXTS[rating]}</>
-);
+const HealthRatingBar: React.FC<BarProps> = ({ rating, showText }) => {
+  const index = rating - 1;
+  return (
+    <>{showText ? HEALTHBAR_TEXTS[index] : HEALTHBAR_SHORT_TEXTS[index]}</>
+  );
+};
 
 export default HealthRatingBar;

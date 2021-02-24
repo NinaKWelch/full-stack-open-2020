@@ -31,7 +31,7 @@ const PatientListPage: React.FC = () => {
       );
 
       handleClose();
-      dispatch(addPatient(newPatient));
+      dispatch(addPatient({ ...newPatient, healthRating: "Not given" }));
     } catch (err: unknown) {
       err instanceof Error ? setError(err.message) : setError("Unknown Error");
     }

@@ -43,7 +43,7 @@ export const reducer = (state: State, action: Action): State => {
     case "UPDATE_PATIENT":
       return {
         ...state,
-        patient: { ...action.payload },
+        patient: action.payload,
       };
     case "SET_DIAGNOSIS_LIST":
       return {
