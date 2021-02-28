@@ -59,37 +59,29 @@ const addPatient = (patient: NewPatient): Patient => {
     return newPatient;
 };
 
-const addPatientEntry = (
-    patientId: string, entry: Omit<NewEntry, "id">
-): NewEntry[] | undefined => {
-    const patient: Patient | undefined = patients.find(
-        patient => patient.id === patientId
-    );
+const addPatientEntry = (entry: Omit<Entry, "id">): NewEntry => {
+    const newEntry = { id: getId(), ...entry };
 
-    const newEntry = {
-        id: getId(),
-        ...entry
-    };
-
-    if(patient) {
-        const updatedPatient = {
-            ...patient,
-            entries: [ ...patient.entries, newEntry ]
-        };
-
-        const updatedEntries = updatedPatient.entries;
-        patients.filter(p => p.id !== updatedPatient.id ? patient : updatedPatient);
-        
-        return updatedEntries;
-    }
-
-    return undefined;
+    return newEntry;
 };
+
+const updatePatient = (id: string, entry: Entry): Patient | undefined => {
+    const patient = getPatient(id);
+
+    if (patient) {
+        patient.entries.push(entry);
+
+        return patient;
+    }      
+    
+    return undefined; 
+};   
 
 export default {
     getPatients,
     getPatient,
     getPublicPatientData,
     addPatient,
-    addPatientEntry
+    addPatientEntry,
+    updatePatient
 };

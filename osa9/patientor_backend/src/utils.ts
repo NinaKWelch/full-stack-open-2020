@@ -80,6 +80,8 @@ const parseCodes = (codes: unknown): string[] => {
     return codes;
 };
 
+export const toPatientId = (id: unknown): string => parseValue('id', id);
+
 export const toNewPatient = (patient: any): NewPatient => ({
     name: parseValue('name', patient.name),
     dateOfBirth: parseDate(patient.dateOfBirth),
@@ -87,8 +89,6 @@ export const toNewPatient = (patient: any): NewPatient => ({
     gender: parseGender(patient.gender),
     occupation: parseValue('occupation', patient.occupation)
 });
-
-export const toPatientId = (id: unknown): string => parseValue('id', id);
 
 export const toNewEntry = (entry: any): Omit<NewEntry, "id"> => {
     const newEntry = {

@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, updatePatient, addPatient } from "../state";
-import { Patient, EntryFormValues } from "../types";
+import { Patient, Entry, EntryFormValues } from "../types";
 import PatientDetails from "./PatientDetails";
 import PatientEntries from "./PatientEntries";
 
@@ -44,6 +44,34 @@ const PatientPage: React.FC<{ handlePatientList: () => void }> = ({
     }
   };
 
+  const updatePatientToAPI = async (id: string, entry: Entry) => {
+    try {
+      const { data: patientFromApi } = await axios.put<Patient>(
+        `${apiBaseUrl}/patients/${id}`,
+        entry
+      );
+
+      // update patients state
+      if (entry.type === "HealthCheck") {
+        // if new entry type is health check
+        // change patient's health check rating
+        dispatch(
+          addPatient({
+            ...patientFromApi,
+            healthRating: entry.healthCheckRating,
+          })
+        );
+      } else {
+        dispatch(addPatient(patientFromApi));
+      }
+
+      // update patient state
+      dispatch(updatePatient(patientFromApi));
+    } catch (err: unknown) {
+      err instanceof Error ? setError(err.message) : setError("Unknown Error");
+    }
+  };
+
   useEffect(() => {
     const fetchPatient = () => {
       if (!patient || (patient && patient.id !== id)) {
@@ -63,26 +91,14 @@ const PatientPage: React.FC<{ handlePatientList: () => void }> = ({
 
   const submitNewEntry = async (values: EntryFormValues) => {
     try {
-      const { data: updatedEntries } = await axios.post<Patient["entries"]>(
+      const { data: newEntry } = await axios.post<Entry>(
         `${apiBaseUrl}/patients/${id}/entries`,
         values
       );
 
-      // if new entry type is health check
-      // update patient list with new health rating
-      if (patient && updatedEntries) {
-        if (values.type === "HealthCheck") {
-          const updatedPatient: Patient = {
-            ...patients[patient.id],
-            healthRating: values.healthCheckRating,
-          };
-
-          dispatch(addPatient(updatedPatient));
-        }
-
-        handleClose();
-        dispatch(updatePatient({ ...patient, entries: updatedEntries }));
-      }
+      // update patient info
+      void updatePatientToAPI(id, newEntry);
+      handleClose();
     } catch (err: unknown) {
       err instanceof Error ? setError(err.message) : setError("Unknown Error");
     }

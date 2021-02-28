@@ -4,10 +4,12 @@ import { toNewPatient, toPatientId, toNewEntry } from '../utils';
 
 const router = express.Router();
 
+// get patient list
 router.get('/', (_req, res) => {
     res.send(patientService.getPublicPatientData());
 });
 
+// get patient
 router.get('/:id', (req, res) => {
     try {
         const id = toPatientId(req.params.id);
@@ -21,6 +23,7 @@ router.get('/:id', (req, res) => {
     }
 });
 
+// get patient entries
 router.get('/:id/entries', (req, res) => {
     try {
         const id = toPatientId(req.params.id);
@@ -34,6 +37,7 @@ router.get('/:id/entries', (req, res) => {
     }
 });
 
+// add patient to patient list
 router.post('/', (req, res) => {
     try {
         const newPatient = toNewPatient(req.body);
@@ -47,19 +51,36 @@ router.post('/', (req, res) => {
     }
 });
 
+// add patient entry to patient
 router.post('/:id/entries', (req, res) => {
     try {
-        const id = toPatientId(req.params.id);
         const newEntry = toNewEntry(req.body);
+        const addedEntry = patientService.addPatientEntry(newEntry);
 
-        const updatedEntries = patientService.addPatientEntry(id, newEntry);
-
-        res.json(updatedEntries);
+        res.json(addedEntry);
     } catch (err: unknown) {
         err instanceof Error
             ? res.status(400).send(err.message)
             : res.status(500).send("Unknown Error");
     }
+});
+
+
+// update patient
+router.put('/:id', (req, res) => {
+    try {
+        const id = toPatientId(req.params.id);
+        // the entry has already been parsed
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const entry = req.body;
+        const updatedPatient = patientService.updatePatient(id, entry);
+        
+        res.json(updatedPatient);
+    } catch (err: unknown) {
+        err instanceof Error
+            ? res.status(400).send(err.message)
+            : res.status(500).send("Unknown Error");
+    }   
 });
 
 export default router;
